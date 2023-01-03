@@ -1,0 +1,61 @@
+td:hover{
+    cursor: pointer;
+    border: 2px solid #0c45d9;
+    box-shadow: 1px 1px 5px 1px #6585d9;
+}
+td:active{
+    border-color: #b757a2;
+}
+
+button {
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    border: 1px solid #03b4f6;
+
+}
+
+hr {
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, #f0f0f0, #03b4f6, #59d941, #f0f0f0);
+}
+
+h1.mainHeader {
+    text-align: center;
+    color: #0b7a03;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px rgba(179, 147, 211, 0.1),
+    3px 4px 4px rgba(179, 147, 211, 0.15),
+    4px 6px 4px rgba(179, 147, 211, 0.2);
+}
+
+h1.messageHeader {
+    text-align: center;
+    color: #f8073f;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px 4px rgba(179, 147, 211, 0.1),
+    3px 4px 4px rgba(179, 147, 211, 0.15),
+    4px 6px 4px rgba(179, 147, 211, 0.2);
+}
+
+table {
+    margin: auto;
+}
+
+td {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #1034a0;
+    border: 3px solid #0c45d9;
+    padding: 10px;
+    border-collapse: separate;
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
+    text-align: center;
+    empty-cells: show;
+}
