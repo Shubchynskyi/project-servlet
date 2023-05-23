@@ -10,13 +10,25 @@ public class Field {
     private static final int FIELD_SIZE = 9;
     private final Map<Integer, Sign> field;
     private final List<List<Integer>> winPossibilities;
+    private final Difficulty difficulty;
+    private final Sign playerSign;
+    private final Sign opponentSign;
 
-    public Field(Sign playerSign, Sign opponentSign) {
+    public Field(Sign playerSign) {
         field = new HashMap<>();
         for (int i = 0; i < FIELD_SIZE; i++) {
             field.put(i, Sign.EMPTY);
         }
         this.winPossibilities = initializeWinPossibilities();
+        this.difficulty = Difficulty.HARD;
+        this.playerSign = playerSign;
+        this.opponentSign = (playerSign == Sign.NOUGHT) ? Sign.CROSS : Sign.NOUGHT;
+    }
+
+    public enum Difficulty {
+        EASY,
+        NORMAL,
+        HARD
     }
 
     public Map<Integer, Sign> getField() {
@@ -55,53 +67,46 @@ public class Field {
     }
 
     public void makeMove() {
-        Sign playerSign = Sign.NOUGHT;
-        Sign opponentSign = Sign.CROSS;
-
-        List<Integer> occupiedCells = new ArrayList<>();
-        for (int i = 0; i < FIELD_SIZE; i++) {
-            if (field.get(i) != Sign.EMPTY) {
-                occupiedCells.add(i);
-            }
-        }
+        List<Integer> occupiedCells = getOccupiedCells();
 
         if (occupiedCells.size() > 1) {
+
             // 1
-            int winningMove = findWinningMove(new HashMap<>(field), playerSign);
+            int winningMove = findWinningMove(playerSign);
             if (winningMove != -1) {
                 field.put(winningMove, playerSign);
                 return;
             }
+
             // 2
-            int blockingMove = findWinningMove(new HashMap<>(field), opponentSign);
+            int blockingMove = findWinningMove(opponentSign);
             if (blockingMove != -1) {
                 field.put(blockingMove, playerSign);
                 return;
             }
+
             // 4
-            int opponentBlockingMove = findBlockingMove(new HashMap<>(field), opponentSign);
-            if (opponentBlockingMove != -1) {
-                field.put(opponentBlockingMove, playerSign);
-                return;
+            if (difficulty == Difficulty.HARD) {
+                int opponentBlockingMove = findPotentialWinningMove(opponentSign);
+                if (opponentBlockingMove != -1) {
+                    field.put(opponentBlockingMove, playerSign);
+                    return;
+                }
             }
-            // TODO методы 3 и 4 менять местами в зависимости от уровня сложности
+
             // 3
-            int potentialWinningMove = findBlockingMove(new HashMap<>(field), playerSign);
+            int potentialWinningMove = findPotentialWinningMove(playerSign);
             if (potentialWinningMove != -1) {
                 field.put(potentialWinningMove, playerSign);
                 return;
             }
+
         } else {
             int[] priorityCells = {4, 0, 2, 6, 8};
             if (field.get(4) == Sign.EMPTY) {
                 field.put(4, playerSign);
             } else {
-                List<Integer> emptyCells = new ArrayList<>();
-                for (int cell : priorityCells) {
-                    if (field.get(cell) == Sign.EMPTY) {
-                        emptyCells.add(cell);
-                    }
-                }
+                List<Integer> emptyCells = getEmptyCells(priorityCells);
                 if (!emptyCells.isEmpty()) {
                     int randomIndex = (int) (Math.random() * emptyCells.size());
                     int randomCell = emptyCells.get(randomIndex);
@@ -109,7 +114,51 @@ public class Field {
                 }
             }
         }
+    }
 
+    private List<Integer> getOccupiedCells() {
+        return field.entrySet().stream()
+                .filter(e -> e.getValue() != Sign.EMPTY)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    private int findWinningMove(Sign playerSign) {
+        Map<Integer, Sign> fieldCopy = new HashMap<>(field);
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            if (fieldCopy.get(i) == Sign.EMPTY) {
+                fieldCopy.put(i, playerSign);
+                if (checkWin(fieldCopy) == playerSign) {
+                    return i;
+                }
+                fieldCopy.remove(i);
+            }
+        }
+        return -1;
+    }
+
+    private int findPotentialWinningMove(Sign playerSign) {
+        Map<Integer, Sign> fieldCopy = new HashMap<>(field);
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            if (fieldCopy.get(i) == Sign.EMPTY) {
+                fieldCopy.put(i, playerSign);
+                if (checkPotentialWin(fieldCopy, playerSign)) {
+                    return i;
+                }
+                fieldCopy.remove(i);
+            }
+        }
+        return -1;
+    }
+
+    private List<Integer> getEmptyCells(int[] priorityCells) {
+        List<Integer> emptyCells = new ArrayList<>();
+        for (int cell : priorityCells) {
+            if (field.get(cell) == Sign.EMPTY) {
+                emptyCells.add(cell);
+            }
+        }
+        return emptyCells;
     }
 
     private int findWinningMove(Map<Integer, Sign> fieldCopy, Sign playerSign) {

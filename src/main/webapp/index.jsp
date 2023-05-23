@@ -35,6 +35,23 @@
     <button type="submit"><img src="img/restart.png" alt="Restart button" width="163" height="76"></button>
 </form>
 
+<form action="newgame" method="post">
+    <label for="difficulty">Select Difficulty:</label>
+    <select name="difficulty" id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+
+    <label for="sign">Select Sign:</label>
+    <select name="sign" id="sign">
+        <option value="cross">Cross</option>
+        <option value="nought">Nought</option>
+    </select>
+
+    <button type="submit">New Game</button>
+</form>
+
 <c:set var="CROSSES" value="${Sign.CROSS}"/>
 <c:set var="NOUGHTS" value="${Sign.NOUGHT}"/>
 
@@ -64,8 +81,6 @@
 <script type="text/javascript">
     <%@include file="static/main.js"%>
 </script>
-
-
 
 </body>
 </html>
