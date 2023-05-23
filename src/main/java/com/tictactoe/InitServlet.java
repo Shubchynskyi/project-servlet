@@ -19,14 +19,15 @@ public class InitServlet extends HttpServlet {
         HttpSession currentSession = req.getSession(true);
 
         // Creating a playing field
-        Field field = new Field();
+        Field field = new Field(Sign.NOUGHT, Sign.CROSS);
 //        Map<Integer, Sign> fieldData = field.getField();
 
         // Getting a list of field values
         List<Sign> data = field.getFieldData();
 
         // Adding field parameters to the session (will be needed to store state between requests)
-        currentSession.setAttribute("field", field);
+        currentSession.setAttribute("field", field.getField());
+        currentSession.setAttribute("fieldClass", field);
         // and field values sorted by index (required for drawing crosses and zeroes)
         currentSession.setAttribute("data", data);
 

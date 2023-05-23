@@ -108,7 +108,7 @@ public class LogicServlet extends HttpServlet {
     }
 
     private Field extractField(HttpSession currentSession) {
-        Object fieldAttribute = currentSession.getAttribute("field");
+        Object fieldAttribute = currentSession.getAttribute("fieldClass");
         if (Field.class != fieldAttribute.getClass()) {
             currentSession.invalidate();
             throw new RuntimeException("Session is broken, try one more time");
