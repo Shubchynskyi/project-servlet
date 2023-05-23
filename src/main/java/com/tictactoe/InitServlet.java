@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name = "InitServlet", value = "/start")
+@WebServlet(name = "InitServlet", value = {"", "/start"}, loadOnStartup = 1)
 public class InitServlet extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Creating a new session
@@ -19,7 +20,7 @@ public class InitServlet extends HttpServlet {
 
         // Creating a playing field
         Field field = new Field();
-        Map<Integer, Sign> fieldData = field.getField();
+//        Map<Integer, Sign> fieldData = field.getField();
 
         // Getting a list of field values
         List<Sign> data = field.getFieldData();

@@ -1,16 +1,31 @@
 package com.tictactoe;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
+//@WebServlet(name = "RestartServlet", value = "/restart")
+//public class RestartServlet extends HttpServlet {
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+//        req.getSession().invalidate();
+//        resp.sendRedirect("/start");
+//    }
+//}
 
 @WebServlet(name = "RestartServlet", value = "/restart")
 public class RestartServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        req.getSession().invalidate();
-        resp.sendRedirect("/start");
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Очистить сессию
+        HttpSession session = req.getSession();
+        session.invalidate();
+
+        // Перенаправить на сервлет инициализации
+        resp.sendRedirect(req.getContextPath() + "/start");
     }
 }

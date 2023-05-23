@@ -45,7 +45,8 @@ public class LogicServlet extends HttpServlet {
         int emptyFieldIndex = field.getEmptyFieldIndex();
 
         if (emptyFieldIndex >= 0) {
-            field.getField().put(emptyFieldIndex, Sign.NOUGHT);
+//            field.getField().put(emptyFieldIndex, Sign.NOUGHT);
+            field.makeMove();
             // Checking if the zero wins after adding the last zero
             if (checkWin(resp, currentSession, field)) {
                 return;

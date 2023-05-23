@@ -31,25 +31,41 @@
 </table>
 
 <hr>
-<button onclick="restart()"><img src="img/restart.png" alt="Restart button" width="163" height="76"></button>
+<form action="restart" method="post">
+    <button type="submit"><img src="img/restart.png" alt="Restart button" width="163" height="76"></button>
+</form>
 
-<c:set var="CROSSES" value="<%=Sign.CROSS%>"/>
-<c:set var="NOUGHTS" value="<%=Sign.NOUGHT%>"/>
+<c:set var="CROSSES" value="${Sign.CROSS}"/>
+<c:set var="NOUGHTS" value="${Sign.NOUGHT}"/>
 
-<c:if test="${winner == CROSSES or winner == NOUGHTS or draw}">
+<c:if test="${winner == CROSSES}">
     <h1 class="messageHeader">CROSSES WIN!</h1>
-
     <script type="text/javascript">
         <%@include file="static/main.js"%>
         removeOnclickFromTd();
     </script>
-
+</c:if>
+<c:if test="${winner == NOUGHTS}">
+    <h1 class="messageHeader">NOUGHTS WIN!</h1>
+    <script type="text/javascript">
+        <%@include file="static/main.js"%>
+        removeOnclickFromTd();
+    </script>
+</c:if>
+<c:if test="${draw}">
+    <h1 class="messageHeader">STANDOFF!</h1>
+    <script type="text/javascript">
+        <%@include file="static/main.js"%>
+        removeOnclickFromTd();
+    </script>
 </c:if>
 <hr>
 
 <script type="text/javascript">
     <%@include file="static/main.js"%>
 </script>
+
+
 
 </body>
 </html>
