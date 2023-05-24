@@ -50,8 +50,8 @@ public class NewGameServlet extends HttpServlet {
         // and field values sorted by index (required for drawing crosses and zeroes)
         currentSession.setAttribute("data", data);
 
-        req.setAttribute("selectedSign", playerSign);
-        req.setAttribute("selectedDifficulty", playerDifficulty);
+        req.getSession().setAttribute("selectedSign", playerSign);
+        req.getSession().setAttribute("selectedDifficulty", playerDifficulty);
 
         // Redirecting request to index.jsp page via server
         getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
