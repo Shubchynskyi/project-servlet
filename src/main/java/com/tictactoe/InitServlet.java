@@ -30,6 +30,8 @@ public class InitServlet extends HttpServlet {
         currentSession.setAttribute("fieldClass", field);
         // and field values sorted by index (required for drawing crosses and zeroes)
         currentSession.setAttribute("data", data);
+        currentSession.setAttribute("selectedSign", "cross");
+        currentSession.setAttribute("selectedDifficulty", "easy");
 
         // Redirecting request to index.jsp page via server
         getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);

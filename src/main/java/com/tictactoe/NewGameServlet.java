@@ -23,7 +23,7 @@ public class NewGameServlet extends HttpServlet {
 
 // Определение знака (Sign)
         Sign sign = Sign.CROSS;
-        if (playerSign.equalsIgnoreCase(Sign.NOUGHT.toString())) {
+        if (playerSign.equalsIgnoreCase("NOUGHT")) {
             sign = Sign.NOUGHT;
         }
 

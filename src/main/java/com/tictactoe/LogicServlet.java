@@ -17,6 +17,13 @@ public class LogicServlet extends HttpServlet {
         // Get the current session
         HttpSession currentSession = req.getSession();
 
+        String selectedSign = (String) currentSession.getAttribute("selectedSign");
+
+        Sign playerSign = Sign.CROSS;
+        if (selectedSign.equalsIgnoreCase("NOUGHT")) {
+            playerSign = Sign.NOUGHT;
+        }
+
         // Getting the play field object from the session
         Field field = extractField(currentSession);
 
@@ -34,7 +41,7 @@ public class LogicServlet extends HttpServlet {
         }
 
         // put a cross in the cell that the user clicked on
-        field.getField().put(index, Sign.CROSS);
+        field.getField().put(index, playerSign);
 
         // Checking if the cross has won after adding the user's last click
         if (checkWin(resp, currentSession, field)) {
