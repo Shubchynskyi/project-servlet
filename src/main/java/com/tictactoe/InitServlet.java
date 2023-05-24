@@ -19,7 +19,7 @@ public class InitServlet extends HttpServlet {
         HttpSession currentSession = req.getSession(true);
 
         // Creating a playing field
-        Field field = new Field(Sign.NOUGHT);
+        Field field = new Field(Sign.CROSS, Difficulty.EASY);
 //        Map<Integer, Sign> fieldData = field.getField();
 
         // Getting a list of field values

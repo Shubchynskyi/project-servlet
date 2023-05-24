@@ -21,11 +21,15 @@ import java.io.IOException;
 public class RestartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Очистить сессию
+        String playerSign = req.getParameter("sign");
+        String playerDifficulty = req.getParameter("difficulty");
+
         HttpSession session = req.getSession();
         session.invalidate();
 
-        // Перенаправить на сервлет инициализации
-        resp.sendRedirect(req.getContextPath() + "/start");
+        req.setAttribute("sign", playerSign);
+        req.setAttribute("difficulty", playerDifficulty);
+
+        resp.sendRedirect(req.getContextPath() + "/newgame?sign=" + playerSign + "&difficulty=" + playerDifficulty);
     }
 }
