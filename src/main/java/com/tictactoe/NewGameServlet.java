@@ -41,6 +41,9 @@ public class NewGameServlet extends HttpServlet {
 // Создание нового объекта Field
         Field field = new Field(sign, difficulty);
 
+        if (playerSign.equalsIgnoreCase("NOUGHT")) {
+            field.makeMove();
+        }
         // Getting a list of field values
         List<Sign> data = field.getFieldData();
 
@@ -50,8 +53,9 @@ public class NewGameServlet extends HttpServlet {
         // and field values sorted by index (required for drawing crosses and zeroes)
         currentSession.setAttribute("data", data);
 
-        req.getSession().setAttribute("selectedSign", playerSign);
-        req.getSession().setAttribute("selectedDifficulty", playerDifficulty);
+        currentSession.setAttribute("selectedSign", playerSign);
+        currentSession.setAttribute("selectedDifficulty", playerDifficulty);
+
 
         // Redirecting request to index.jsp page via server
         getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);

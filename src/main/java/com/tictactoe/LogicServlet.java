@@ -60,7 +60,7 @@ public class LogicServlet extends HttpServlet {
             }
         }
         // If there is no empty cell and no one has won, then it is a draw
-        else {
+        if(field.getEmptyFieldIndex() < 0) {
             // We add a flag to the session that signals that a draw has occurred
             currentSession.setAttribute("draw", true);
 
