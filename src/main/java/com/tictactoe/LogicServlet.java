@@ -82,8 +82,6 @@ public class LogicServlet extends HttpServlet {
         currentSession.setAttribute("data", data);
         currentSession.setAttribute("field", field);
 
-
-
         resp.sendRedirect("/index.jsp");
     }
 

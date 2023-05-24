@@ -1,22 +1,13 @@
-td:hover{
+td:hover {
     cursor: pointer;
     border: 2px solid #0c45d9;
     box-shadow: 1px 1px 5px 1px #6585d9;
 }
-td:active{
+
+td:active {
     border-color: #b757a2;
 }
 
-button {
-    outline: none;
-    background: transparent;
-    cursor: pointer;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, 0);
-    border: 1px solid #03b4f6;
-
-}
 
 hr {
     border: 0;
@@ -59,3 +50,70 @@ td {
     text-align: center;
     empty-cells: show;
 }
+
+
+/* for select diff and sign */
+.formContainer {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formContainer label {
+    margin-right: 10px;
+}
+
+.formContainer select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* button style */
+.newGameButton {
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 230px;
+    height: 70px;
+    border: none;
+    border-radius: 10px;
+    background-color: #03b4f6;
+    color: #fff;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 28px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.newGameButton:hover {
+    background-color: #59d941;
+}
+
+.newGameButton:active {
+    background-color: #b757a2;
+}
+
+
+#difficulty.selectDifficulty {
+    margin-right: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.labelFont16 {
+    font-size: 16px;
+}
+
+.labelFont18 {
+    font-size: 18px;
+}
+
+
+

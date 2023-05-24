@@ -2,7 +2,7 @@ package com.tictactoe;
 
 public enum Difficulty {
     EASY("easy"),
-    NORMAL("normal"),
+    MEDIUM("medium"),
     HARD("hard");
 
     private final String difficulty;

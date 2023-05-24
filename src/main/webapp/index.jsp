@@ -1,5 +1,5 @@
 <%@ page import="com.tictactoe.Sign" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
@@ -32,26 +32,22 @@
 
 <hr>
 <form action="restart" method="post">
-    <label for="difficulty">Select Difficulty:</label>
-    <select name="difficulty" id="difficulty">
-        <option value="easy" ${selectedDifficulty eq 'easy' ? 'selected' : ''}>Easy</option>
-        <option value="medium" ${selectedDifficulty eq 'medium' ? 'selected' : ''}>Medium</option>
-        <option value="hard" ${selectedDifficulty eq 'hard' ? 'selected' : ''}>Hard</option>
-    </select>
+    <div class="formContainer">
+        <label for="difficulty" class="labelFont18">Select Difficulty:</label>
+        <select name="difficulty" id="difficulty" class="selectDifficulty labelFont16">
+            <option value="easy" ${selectedDifficulty eq 'easy' ? 'selected' : ''}>Easy</option>
+            <option value="medium" ${selectedDifficulty eq 'medium' ? 'selected' : ''}>Medium</option>
+            <option value="hard" ${selectedDifficulty eq 'hard' ? 'selected' : ''}>Hard</option>
+        </select>
 
-    <label for="sign">Select Sign:</label>
-    <select name="sign" id="sign">
-        <option value="cross" ${selectedSign eq 'cross' ? 'selected' : ''}>Cross</option>
-        <option value="nought" ${selectedSign eq 'nought' ? 'selected' : ''}>Nought</option>
-    </select>
-    <button type="submit"><img src="img/restart.png" alt="Restart button" width="163" height="76"></button>
+        <label for="sign" class="labelFont18">Select Sign:</label>
+        <select name="sign" id="sign" class="labelFont16">
+            <option value="cross" ${selectedSign eq 'cross' ? 'selected' : ''}>Cross</option>
+            <option value="nought" ${selectedSign eq 'nought' ? 'selected' : ''}>Nought</option>
+        </select>
+    </div>
+    <button type="submit" class="newGameButton">New Game</button>
 </form>
-
-<%--<form action="newgame" method="post">--%>
-
-
-<%--    <button type="submit">New Game</button>--%>
-<%--</form>--%>
 
 <c:set var="CROSSES" value="${Sign.CROSS}"/>
 <c:set var="NOUGHTS" value="${Sign.NOUGHT}"/>

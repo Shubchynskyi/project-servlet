@@ -66,17 +66,19 @@ public class Field {
     public void makeMove() {
         List<Integer> emptyCells = getEmptyCells();
 
-        if (emptyCells.size() < FIELD_SIZE - 1) {
+        if (emptyCells.size() == FIELD_SIZE) {
+            makeFirstMove();
+            return;
+        }
 
-            // 1
+        if (emptyCells.size() < FIELD_SIZE - 1) {
             int winningMove = findWinningMove(AISign);
             if (winningMove != -1) {
                 field.put(winningMove, AISign);
                 return;
             }
 
-            // 2
-            if (difficulty == Difficulty.NORMAL || difficulty == Difficulty.HARD) {
+            if (difficulty == Difficulty.MEDIUM || difficulty == Difficulty.HARD) {
                 int blockingMove = findWinningMove(playerSign);
                 if (blockingMove != -1) {
                     field.put(blockingMove, AISign);
@@ -84,7 +86,6 @@ public class Field {
                 }
             }
 
-            // 4
             if (difficulty == Difficulty.HARD) {
                 int opponentBlockingMove = findPotentialWinningMove(playerSign);
                 if (opponentBlockingMove != -1) {
@@ -93,33 +94,48 @@ public class Field {
                 }
             }
 
-            // 3
-
             int potentialWinningMove = findPotentialWinningMove(AISign);
             if (potentialWinningMove != -1) {
                 field.put(potentialWinningMove, AISign);
                 return;
             }
 
-
-            if (!emptyCells.isEmpty()) {
-                Random random = new Random();
-                int randomIndex = random.nextInt(emptyCells.size());
-                int randomCell = emptyCells.get(randomIndex);
-                field.put(randomCell, AISign);
-            }
-
+            makeRandomMove(emptyCells);
         } else {
+            makePriorityMove();
+        }
+    }
+
+    private void makeFirstMove() {
+        if (difficulty == Difficulty.EASY) {
+            makeRandomMove(getEmptyCells());
+        } else if (difficulty == Difficulty.MEDIUM) {
             int[] priorityCells = {4, 0, 2, 6, 8};
-            if (field.get(4) == Sign.EMPTY) {
-                field.put(4, AISign);
-            } else {
-                List<Integer> cornerCells = getEmptyCells(priorityCells);
-                if (!cornerCells.isEmpty()) {
-                    int randomIndex = (int) (Math.random() * cornerCells.size());
-                    int randomCell = cornerCells.get(randomIndex);
-                    field.put(randomCell, AISign);
-                }
+            makeRandomMove(getEmptyCells(priorityCells));
+        } else if (difficulty == Difficulty.HARD) {
+            field.put(4, AISign);
+        }
+    }
+
+    private void makeRandomMove(List<Integer> emptyCells) {
+        if (!emptyCells.isEmpty()) {
+            Random random = new Random();
+            int randomIndex = random.nextInt(emptyCells.size());
+            int randomCell = emptyCells.get(randomIndex);
+            field.put(randomCell, AISign);
+        }
+    }
+
+    private void makePriorityMove() {
+        int[] priorityCells = {4, 0, 2, 6, 8};
+        if (field.get(4) == Sign.EMPTY) {
+            field.put(4, AISign);
+        } else {
+            List<Integer> cornerCells = getEmptyCells(priorityCells);
+            if (!cornerCells.isEmpty()) {
+                int randomIndex = (int) (Math.random() * cornerCells.size());
+                int randomCell = cornerCells.get(randomIndex);
+                field.put(randomCell, AISign);
             }
         }
     }
@@ -168,32 +184,6 @@ public class Field {
         }
         return emptyCells;
     }
-
-//    private int findWinningMove(Map<Integer, Sign> fieldCopy, Sign playerSign) {
-//        for (int i = 0; i < FIELD_SIZE; i++) {
-//            if (fieldCopy.get(i) == Sign.EMPTY) {
-//                fieldCopy.put(i, playerSign);
-//                if (checkWin(fieldCopy) == playerSign) {
-//                    return i;
-//                }
-//                fieldCopy.remove(i);
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    private int findBlockingMove(Map<Integer, Sign> fieldCopy, Sign playerSign) {
-//        for (int i = 0; i < FIELD_SIZE; i++) {
-//            if (fieldCopy.get(i) == Sign.EMPTY) {
-//                fieldCopy.put(i, playerSign);
-//                if (checkPotentialWin(fieldCopy, playerSign)) {
-//                    return i;
-//                }
-//                fieldCopy.remove(i);
-//            }
-//        }
-//        return -1;
-//    }
 
     private boolean checkPotentialWin(Map<Integer, Sign> fieldCopy, Sign playerSign) {
         for (List<Integer> winPossibility : winPossibilities) {
