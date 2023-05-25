@@ -43,10 +43,6 @@ public class Game {
     }
 
     public Sign checkWin() {
-        return checkWin(field);
-    }
-
-    private Sign checkWin(Map<Integer, Sign> field) {
         for (List<Integer> winPossibility : winPossibilities) {
             int index1 = winPossibility.get(0);
             int index2 = winPossibility.get(1);
@@ -65,7 +61,7 @@ public class Game {
         List<Integer> emptyCells = getEmptyCells();
 
         if (emptyCells.size() == FIELD_SIZE) {
-            makeFirstMove();
+            makeFirstMoveIfAiSignCross();
             return;
         }
 
@@ -76,7 +72,7 @@ public class Game {
                 return;
             }
 
-            if (difficulty == Difficulty.MEDIUM || difficulty == Difficulty.HARD) {
+            if (difficulty != Difficulty.EASY) {
                 int blockingMove = findWinningMove(playerSign);
                 if (blockingMove != -1) {
                     field.put(blockingMove, AISign);
@@ -85,22 +81,22 @@ public class Game {
             }
 
             if (difficulty == Difficulty.HARD) {
-                int opponentBlockingMove = findPotentialWinningMove(playerSign);
-                if (opponentBlockingMove != -1) {
-                    field.put(opponentBlockingMove, AISign);
+                List<Integer> potentialWinningMoves = findPotentialWinningMoves(playerSign);
+                if (!potentialWinningMoves.isEmpty()) {
+                    makeRandomMove(potentialWinningMoves);
                     return;
                 }
             }
 
-            int potentialWinningMove = findPotentialWinningMove(AISign);
-            if (potentialWinningMove != -1) {
-                field.put(potentialWinningMove, AISign);
+            List<Integer> potentialWinningMoves = findPotentialWinningMoves(AISign);
+            if (!potentialWinningMoves.isEmpty()) {
+                makeRandomMove(potentialWinningMoves);
                 return;
             }
 
-            makeRandomMove(emptyCells);
+            makeRandomMove(emptyCells); // для последнего хода или когда нет вариантов
         } else {
-            makePriorityMove();
+            makePriorityMove(); // Делаем ход в приоритетную ячейку
         }
     }
 
@@ -122,7 +118,7 @@ public class Game {
         return getEmptyCells().size() < FIELD_SIZE - 1;
     }
 
-    private void makeFirstMove() {
+    private void makeFirstMoveIfAiSignCross() {
         if (difficulty == Difficulty.EASY) {
             makeRandomMove(getEmptyCells());
         } else if (difficulty == Difficulty.MEDIUM) {
@@ -142,44 +138,45 @@ public class Game {
     }
 
     private void makePriorityMove() {
-        if (field.get(CENTER_CELL_INDEX) == Sign.EMPTY) {
+        if (field.get(CENTER_CELL_INDEX) == Sign.EMPTY && difficulty == Difficulty.HARD) {
             field.put(CENTER_CELL_INDEX, AISign);
-        } else {
+        } else if(difficulty != Difficulty.EASY){
             List<Integer> cornerCells = getEmptyPriorityCells();
             if (!cornerCells.isEmpty()) {
                 int randomIndex = (int) (Math.random() * cornerCells.size());
                 int randomCell = cornerCells.get(randomIndex);
                 field.put(randomCell, AISign);
             }
+        } else {
+            makeRandomMove(getEmptyCells());
         }
     }
 
     private int findWinningMove(Sign playerSign) {
-        Map<Integer, Sign> fieldCopy = new HashMap<>(field);
         for (int i = 0; i < FIELD_SIZE; i++) {
-            if (fieldCopy.get(i) == Sign.EMPTY) {
-                fieldCopy.put(i, playerSign);
-                if (checkWin(fieldCopy) == playerSign) {
+            if (field.get(i) == Sign.EMPTY) {
+                field.put(i, playerSign);
+                if (checkWin() == playerSign) {
                     return i;
                 }
-                fieldCopy.remove(i);
+                field.put(i, Sign.EMPTY);
             }
         }
         return -1;
     }
 
-    private int findPotentialWinningMove(Sign playerSign) {
-        Map<Integer, Sign> fieldCopy = new HashMap<>(field);
+    private List<Integer> findPotentialWinningMoves(Sign playerSign) {
+        List<Integer> potentialWinningMoves = new ArrayList<>();
         for (int i = 0; i < FIELD_SIZE; i++) {
-            if (fieldCopy.get(i) == Sign.EMPTY) {
-                fieldCopy.put(i, playerSign);
-                if (checkPotentialWin(fieldCopy, playerSign)) {
-                    return i;
+            if (field.get(i) == Sign.EMPTY) {
+                field.put(i, playerSign);
+                if (checkPotentialWin(field, playerSign)) {
+                    potentialWinningMoves.add(i);
                 }
-                fieldCopy.remove(i);
+                field.put(i, Sign.EMPTY);
             }
         }
-        return -1;
+        return potentialWinningMoves;
     }
 
     private boolean checkPotentialWin(Map<Integer, Sign> fieldCopy, Sign playerSign) {
