@@ -11,6 +11,9 @@ public enum Sign {
         this.sign = sign;
     }
 
+
+    // used in index.jsp
+    @SuppressWarnings("unused")
     public char getSign() {
         return sign;
     }

@@ -2,7 +2,6 @@ package com.tictactoe.controller;
 
 import com.tictactoe.entity.Game;
 import com.tictactoe.entity.Sign;
-import com.tictactoe.util.Constant;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,17 +15,17 @@ import java.util.List;
 
 import static com.tictactoe.util.Constant.*;
 
-@WebServlet(name = "LogicServlet", value = Constant.LOGIC)
+@WebServlet(name = "LogicServlet", value = LOGIC)
 public class LogicServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession currentSession = req.getSession();
 
-        String selectedSign = (String) currentSession.getAttribute(Constant.SELECTED_SIGN);
+        String selectedSign = (String) currentSession.getAttribute(SELECTED_SIGN_ATTRIBUTE);
 
         Sign playerSign = Sign.CROSS;
-        if (selectedSign.equalsIgnoreCase(Constant.NOUGHT)) {
+        if (selectedSign.equalsIgnoreCase(NOUGHT)) {
             playerSign = Sign.NOUGHT;
         }
 
@@ -58,7 +57,7 @@ public class LogicServlet extends HttpServlet {
 
         if (emptyFieldIndex >= 0) {
             game.makeMove();
-            // Checking if the zero wins after adding the last zero
+            // Checking if the AI sign wins after adding the last sign
             if (checkWin(resp, currentSession, game)) {
                 return;
             }
@@ -67,9 +66,9 @@ public class LogicServlet extends HttpServlet {
         // If there is no empty cell and no one has won, then it is a draw
         if (game.getEmptyFieldIndex() < 0) {
             // We add a flag to the session that signals that a draw has occurred
-            currentSession.setAttribute(Constant.DRAW, true);
+            currentSession.setAttribute(DRAW, true);
             List<Sign> data = game.getFieldData();
-            currentSession.setAttribute(Constant.DATA, data);
+            currentSession.setAttribute(DATA_ATTRIBUTE, data);
             resp.sendRedirect(INDEX_JSP);
             return;
         }
@@ -78,7 +77,7 @@ public class LogicServlet extends HttpServlet {
         List<Sign> data = game.getFieldData();
 
         // Update field object and icon list in session
-        currentSession.setAttribute(Constant.DATA, data);
+        currentSession.setAttribute(DATA_ATTRIBUTE, data);
         currentSession.setAttribute(FIELD_ATTRIBUTE, game);
 
         resp.sendRedirect(INDEX_JSP);
@@ -98,7 +97,7 @@ public class LogicServlet extends HttpServlet {
             List<Sign> data = game.getFieldData();
 
             // Update this list in session
-            currentSession.setAttribute(DATA, data);
+            currentSession.setAttribute(DATA_ATTRIBUTE, data);
 
             // Send a redirect
             response.sendRedirect(INDEX_JSP);
@@ -114,7 +113,7 @@ public class LogicServlet extends HttpServlet {
     }
 
     private Game extractField(HttpSession currentSession) {
-        Object fieldAttribute = currentSession.getAttribute(FIELD_CLASS);
+        Object fieldAttribute = currentSession.getAttribute(FIELD_CLASS_ATTRIBUTE);
         if (Game.class != fieldAttribute.getClass()) {
             currentSession.invalidate();
             throw new RuntimeException(SESSION_IS_BROKEN_TRY_ONE_MORE_TIME);

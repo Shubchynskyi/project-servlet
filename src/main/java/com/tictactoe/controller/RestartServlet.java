@@ -1,7 +1,5 @@
 package com.tictactoe.controller;
 
-import com.tictactoe.util.Constant;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +23,8 @@ public class RestartServlet extends HttpServlet {
         req.setAttribute(SIGN, playerSign);
         req.setAttribute(DIFFICULTY, playerDifficulty);
 
-        resp.sendRedirect(req.getContextPath() + "/new-game?sign=" + playerSign + "&difficulty=" + playerDifficulty);
+        resp.sendRedirect(req.getContextPath() + NEW_GAME
+                          + "?sign=" + playerSign
+                          + "&difficulty=" + playerDifficulty);
     }
 }

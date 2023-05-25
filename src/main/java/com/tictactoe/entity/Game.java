@@ -53,7 +53,9 @@ public class Game {
             int index3 = winPossibility.get(2);
 
             if (field.get(index1) == field.get(index2) && field.get(index1) == field.get(index3)) {
-                return field.get(index1);
+                if(field.get(index1) != Sign.EMPTY) {
+                    return field.get(index1);
+                }
             }
         }
         return Sign.EMPTY;
@@ -102,6 +104,20 @@ public class Game {
         }
     }
 
+    private List<Integer> getEmptyCells() {
+        return field.entrySet().stream()
+                .filter(e -> e.getValue() == Sign.EMPTY)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    private List<Integer> getEmptyPriorityCells() {
+        return Arrays.stream(Game.PRIORITY_CELLS)
+                .filter(cell -> field.get(cell) == Sign.EMPTY)
+                .boxed()
+                .collect(Collectors.toList());
+    }
+
     private boolean isIntermediateMove() {
         return getEmptyCells().size() < FIELD_SIZE - 1;
     }
@@ -112,7 +128,7 @@ public class Game {
         } else if (difficulty == Difficulty.MEDIUM) {
             makeRandomMove(getEmptyPriorityCells());
         } else if (difficulty == Difficulty.HARD) {
-            field.put(4, AISign);
+            field.put(CENTER_CELL_INDEX, AISign);
         }
     }
 
@@ -136,20 +152,6 @@ public class Game {
                 field.put(randomCell, AISign);
             }
         }
-    }
-
-    private List<Integer> getEmptyCells() {
-        return field.entrySet().stream()
-                .filter(e -> e.getValue() == Sign.EMPTY)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }
-
-    private List<Integer> getEmptyPriorityCells() {
-        return Arrays.stream(Game.PRIORITY_CELLS)
-                .filter(cell -> field.get(cell) == Sign.EMPTY)
-                .boxed()
-                .collect(Collectors.toList());
     }
 
     private int findWinningMove(Sign playerSign) {
@@ -186,7 +188,9 @@ public class Game {
             int index2 = winPossibility.get(1);
             int index3 = winPossibility.get(2);
 
-            if ((fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == Sign.EMPTY) || (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == Sign.EMPTY && fieldCopy.get(index3) == playerSign) || (fieldCopy.get(index1) == Sign.EMPTY && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == playerSign)) {
+            if ((fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == Sign.EMPTY)
+                || (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == Sign.EMPTY && fieldCopy.get(index3) == playerSign)
+                || (fieldCopy.get(index1) == Sign.EMPTY && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == playerSign)) {
                 return true;
             }
         }
