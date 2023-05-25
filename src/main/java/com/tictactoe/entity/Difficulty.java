@@ -1,4 +1,4 @@
-package com.tictactoe;
+package com.tictactoe.entity;
 
 public enum Difficulty {
     EASY("easy"),

@@ -1,32 +1,28 @@
-package com.tictactoe;
+package com.tictactoe.entity;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Field {
+public class Game {
     private static final int FIELD_SIZE = 9;
+    private static final int CENTER_CELL_INDEX = 4;
+    private static final int[] PRIORITY_CELLS = {4, 0, 2, 6, 8};
     private final Map<Integer, Sign> field;
     private final List<List<Integer>> winPossibilities;
     private final Difficulty difficulty;
     private final Sign AISign;
     private final Sign playerSign;
 
-    public Field(Sign playerSign, Difficulty difficulty) {
+    public Game(Sign playerSign, Difficulty difficulty) {
         field = new HashMap<>();
         for (int i = 0; i < FIELD_SIZE; i++) {
             field.put(i, Sign.EMPTY);
         }
-        this.winPossibilities = initializeWinPossibilities();
+        this.winPossibilities = getWinPossibilities();
         this.difficulty = difficulty;
         this.playerSign = playerSign;
-        this.AISign = (playerSign == Sign.NOUGHT) ? Sign.CROSS : Sign.NOUGHT;
+        this.AISign = playerSign.equals(Sign.NOUGHT) ? Sign.CROSS : Sign.NOUGHT;
     }
-
-//    public enum Difficulty {
-//        EASY,
-//        NORMAL,
-//        HARD
-//    }
 
     public Map<Integer, Sign> getField() {
         return field;
@@ -71,7 +67,7 @@ public class Field {
             return;
         }
 
-        if (emptyCells.size() < FIELD_SIZE - 1) {
+        if (isIntermediateMove()) {
             int winningMove = findWinningMove(AISign);
             if (winningMove != -1) {
                 field.put(winningMove, AISign);
@@ -106,12 +102,15 @@ public class Field {
         }
     }
 
+    private boolean isIntermediateMove() {
+        return getEmptyCells().size() < FIELD_SIZE - 1;
+    }
+
     private void makeFirstMove() {
         if (difficulty == Difficulty.EASY) {
             makeRandomMove(getEmptyCells());
         } else if (difficulty == Difficulty.MEDIUM) {
-            int[] priorityCells = {4, 0, 2, 6, 8};
-            makeRandomMove(getEmptyCells(priorityCells));
+            makeRandomMove(getEmptyPriorityCells());
         } else if (difficulty == Difficulty.HARD) {
             field.put(4, AISign);
         }
@@ -127,11 +126,10 @@ public class Field {
     }
 
     private void makePriorityMove() {
-        int[] priorityCells = {4, 0, 2, 6, 8};
-        if (field.get(4) == Sign.EMPTY) {
-            field.put(4, AISign);
+        if (field.get(CENTER_CELL_INDEX) == Sign.EMPTY) {
+            field.put(CENTER_CELL_INDEX, AISign);
         } else {
-            List<Integer> cornerCells = getEmptyCells(priorityCells);
+            List<Integer> cornerCells = getEmptyPriorityCells();
             if (!cornerCells.isEmpty()) {
                 int randomIndex = (int) (Math.random() * cornerCells.size());
                 int randomCell = cornerCells.get(randomIndex);
@@ -144,6 +142,13 @@ public class Field {
         return field.entrySet().stream()
                 .filter(e -> e.getValue() == Sign.EMPTY)
                 .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    private List<Integer> getEmptyPriorityCells() {
+        return Arrays.stream(Game.PRIORITY_CELLS)
+                .filter(cell -> field.get(cell) == Sign.EMPTY)
+                .boxed()
                 .collect(Collectors.toList());
     }
 
@@ -175,36 +180,20 @@ public class Field {
         return -1;
     }
 
-    private List<Integer> getEmptyCells(int[] priorityCells) {
-        List<Integer> emptyCells = new ArrayList<>();
-        for (int cell : priorityCells) {
-            if (field.get(cell) == Sign.EMPTY) {
-                emptyCells.add(cell);
-            }
-        }
-        return emptyCells;
-    }
-
     private boolean checkPotentialWin(Map<Integer, Sign> fieldCopy, Sign playerSign) {
         for (List<Integer> winPossibility : winPossibilities) {
             int index1 = winPossibility.get(0);
             int index2 = winPossibility.get(1);
             int index3 = winPossibility.get(2);
 
-            if (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == Sign.EMPTY) {
-                return true;
-            }
-            if (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == Sign.EMPTY && fieldCopy.get(index3) == playerSign) {
-                return true;
-            }
-            if (fieldCopy.get(index1) == Sign.EMPTY && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == playerSign) {
+            if ((fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == Sign.EMPTY) || (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == Sign.EMPTY && fieldCopy.get(index3) == playerSign) || (fieldCopy.get(index1) == Sign.EMPTY && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == playerSign)) {
                 return true;
             }
         }
         return false;
     }
 
-    private List<List<Integer>> initializeWinPossibilities() {
+    private List<List<Integer>> getWinPossibilities() {
         List<List<Integer>> winPossibilities = new ArrayList<>();
         winPossibilities.add(List.of(0, 1, 2));
         winPossibilities.add(List.of(3, 4, 5));
