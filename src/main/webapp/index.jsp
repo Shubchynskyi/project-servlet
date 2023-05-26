@@ -38,6 +38,7 @@
             <option value="easy" ${selectedDifficulty eq 'easy' ? 'selected' : ''}>Easy</option>
             <option value="medium" ${selectedDifficulty eq 'medium' ? 'selected' : ''}>Medium</option>
             <option value="hard" ${selectedDifficulty eq 'hard' ? 'selected' : ''}>Hard</option>
+            <option value="hard" ${selectedDifficulty eq 'god' ? 'selected' : ''}>God</option>
         </select>
 
         <label for="sign" class="labelFont18">Select Sign:</label>

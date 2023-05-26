@@ -7,6 +7,8 @@ public class Game {
     private static final int FIELD_SIZE = 9;
     private static final int CENTER_CELL_INDEX = 4;
     private static final int[] PRIORITY_CELLS = {4, 0, 2, 6, 8};
+    private static final int[] NOT_CORNER_CELLS = {1, 3, 5, 7};
+    private static final int GOD_NUMBER = 3;
     private final Map<Integer, Sign> field;
     private final List<List<Integer>> winPossibilities;
     private final Difficulty difficulty;
@@ -65,6 +67,13 @@ public class Game {
             return;
         }
 
+        if (difficulty == Difficulty.GOD && field.size() == GOD_NUMBER) {
+            if (isPlayerInOppositeCorners() && isComputerInMiddle()) {
+                makeMoveAvoidingCorners();
+                return;
+            }
+        }
+
         if (isIntermediateMove()) {
             int winningMove = findWinningMove(AISign);
             if (winningMove != -1) {
@@ -94,9 +103,9 @@ public class Game {
                 return;
             }
 
-            makeRandomMove(emptyCells); // для последнего хода или когда нет вариантов
+            makeRandomMove(emptyCells); // for the last move or when there are no options
         } else {
-            makePriorityMove(); // Делаем ход в приоритетную ячейку
+            makePriorityMove();
         }
     }
 
@@ -181,17 +190,42 @@ public class Game {
 
     private boolean checkPotentialWin(Map<Integer, Sign> fieldCopy, Sign playerSign) {
         for (List<Integer> winPossibility : winPossibilities) {
-            int index1 = winPossibility.get(0);
-            int index2 = winPossibility.get(1);
-            int index3 = winPossibility.get(2);
+            int playerSignCount = 0;
+            boolean hasEmptyCell = false;
 
-            if ((fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == Sign.EMPTY)
-                || (fieldCopy.get(index1) == playerSign && fieldCopy.get(index2) == Sign.EMPTY && fieldCopy.get(index3) == playerSign)
-                || (fieldCopy.get(index1) == Sign.EMPTY && fieldCopy.get(index2) == playerSign && fieldCopy.get(index3) == playerSign)) {
+            for (Integer cellIndex : winPossibility) {
+                Sign cellSign = fieldCopy.get(cellIndex);
+
+                if (cellSign == playerSign) {
+                    playerSignCount++;
+                } else if (cellSign == Sign.EMPTY) {
+                    hasEmptyCell = true;
+                }
+            }
+
+            if (playerSignCount == 2 && hasEmptyCell) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isPlayerInOppositeCorners() {
+        return (field.get(0) == playerSign && field.get(8) == playerSign)
+               || (field.get(2) == playerSign && field.get(6) == playerSign);
+    }
+
+    private boolean isComputerInMiddle() {
+        return field.get(CENTER_CELL_INDEX) == AISign;
+    }
+
+    private void makeMoveAvoidingCorners() {
+        List<Integer> availableMoves = Arrays.stream(NOT_CORNER_CELLS)
+                .filter(cell -> field.get(cell) == Sign.EMPTY)
+                .boxed()
+                .collect(Collectors.toList());
+
+        makeRandomMove(availableMoves);
     }
 
     private List<List<Integer>> getWinPossibilities() {
